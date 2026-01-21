@@ -1,0 +1,74 @@
+/* Admin Styles */
+.bdb-admin-panel {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.bdb-admin-panel h1 {
+    margin-top: 0;
+    color: #333;
+}
+
+.bdb-form-group {
+    margin-bottom: 20px;
+}
+
+.bdb-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+.bdb-form-group input,
+.bdb-form-group textarea,
+.bdb-form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.bdb-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #0073aa;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.bdb-btn:hover {
+    background: #005a87;
+}
+
+.bdb-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.bdb-table th,
+.bdb-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.bdb-table th {
+    background: #f5f5f5;
+    font-weight: 600;
+    color: #333;
+}
+
+.bdb-table tr:hover {
+    background: #f9f9f9;
+}
