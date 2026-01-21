@@ -1,6 +1,7 @@
 <?php
 /**
  * The main template file - Homepage
+ * Tesla-Inspired Design
  *
  * @package Business_Directory_Theme
  */
@@ -9,55 +10,159 @@ get_header(); ?>
 
 <main class="site-main homepage">
 	
-	<!-- Hero Section -->
-	<section class="hero-section">
-		<div class="container">
-			<h1 class="hero-title">Find & Book Local Businesses</h1>
-			<p class="hero-subtitle">Discover the best services in your area and book instantly</p>
-			
-			<form method="get" action="<?php echo esc_url(home_url('/business_listing/')); ?>" class="hero-search">
-				<input type="text" name="s" placeholder="Search for businesses, services..." class="hero-search-input">
-				<button type="submit" class="hero-search-btn">Search</button>
-			</form>
+	<!-- Tesla-Style Hero Section -->
+	<section class="tesla-hero">
+		<?php
+		// Get a featured image from first business or use placeholder
+		$hero_query = new WP_Query(array(
+			'post_type' => 'business_listing',
+			'posts_per_page' => 1,
+			'meta_key' => '_thumbnail_id'
+		));
+		
+		if ($hero_query->have_posts()) {
+			$hero_query->the_post();
+			if (has_post_thumbnail()) {
+				the_post_thumbnail('full', array('class' => 'tesla-hero-image'));
+			}
+			wp_reset_postdata();
+		}
+		?>
+		<div class="tesla-hero-overlay"></div>
+		<div class="tesla-hero-content">
+			<h1 class="tesla-hero-title">Discover Local Excellence</h1>
+			<p class="tesla-hero-subtitle">Book the best services in your area with confidence</p>
+			<div class="tesla-hero-cta">
+				<a href="<?php echo esc_url(home_url('/business_listing/')); ?>" class="tesla-btn tesla-btn-primary">Explore Businesses</a>
+				<a href="#featured" class="tesla-btn tesla-btn-secondary">Learn More</a>
+			</div>
+		</div>
+	</section>
+
+	<!-- Statistics Section -->
+	<section class="tesla-section tesla-section-alt">
+		<div class="tesla-stats">
+			<?php
+			$business_count = wp_count_posts('business_listing')->publish;
+			$booking_count = 0;
+			global $wpdb;
+			$booking_count = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}bookings WHERE status = 'confirmed'");
+			$category_count = wp_count_terms('business_category');
+			?>
+			<div class="tesla-stat">
+				<div class="tesla-stat-value"><?php echo number_format($business_count); ?>+</div>
+				<div class="tesla-stat-label">Local Businesses</div>
+			</div>
+			<div class="tesla-stat">
+				<div class="tesla-stat-value"><?php echo number_format($booking_count); ?>+</div>
+				<div class="tesla-stat-label">Bookings Made</div>
+			</div>
+			<div class="tesla-stat">
+				<div class="tesla-stat-value"><?php echo number_format($category_count); ?>+</div>
+				<div class="tesla-stat-label">Categories</div>
+			</div>
+			<div class="tesla-stat">
+				<div class="tesla-stat-value">4.8</div>
+				<div class="tesla-stat-label">Avg Rating</div>
+			</div>
 		</div>
 	</section>
 
 	<!-- Featured Businesses -->
-	<section class="featured-businesses">
-		<div class="container">
-			<h2 class="section-title">Featured Businesses</h2>
-			
-			<?php
-			$featured_businesses = new WP_Query(array(
-				'post_type' => 'business_listing',
-				'posts_per_page' => 6,
-				'orderby' => 'date',
-				'order' => 'DESC'
-			));
+	<section class="tesla-section" id="featured">
+		<div class="tesla-section-header">
+			<h2 class="tesla-heading-xl">Featured Businesses</h2>
+			<p class="tesla-text-body">Discover top-rated local services</p>
+		</div>
+		
+		<?php
+		$featured_businesses = new WP_Query(array(
+			'post_type' => 'business_listing',
+			'posts_per_page' => 6,
+			'orderby' => 'date',
+			'order' => 'DESC'
+		));
 
-			if ($featured_businesses->have_posts()) :
-			?>
-				<div class="business-grid">
-					<?php while ($featured_businesses->have_posts()) : $featured_businesses->the_post(); ?>
-						<div class="business-card">
-							<?php if (has_post_thumbnail()) : ?>
-								<div class="business-thumb">
-									<a href="<?php the_permalink(); ?>">
-										<?php the_post_thumbnail('medium'); ?>
-									</a>
+		if ($featured_businesses->have_posts()) :
+		?>
+			<div class="tesla-grid tesla-grid-3">
+				<?php while ($featured_businesses->have_posts()) : $featured_businesses->the_post(); ?>
+					<article class="tesla-card">
+						<?php if (has_post_thumbnail()) : ?>
+							<div class="tesla-card-image-wrapper">
+								<a href="<?php the_permalink(); ?>">
+									<?php the_post_thumbnail('large', array('class' => 'tesla-card-image')); ?>
+								</a>
+							</div>
+						<?php endif; ?>
+						
+						<div class="tesla-card-content">
+							<h3 class="tesla-card-title">
+								<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+							</h3>
+							
+							<?php
+							// Get categories
+							$categories = get_the_terms(get_the_ID(), 'business_category');
+							if ($categories && !is_wp_error($categories)) :
+							?>
+								<div class="tesla-card-meta">
+									<?php foreach (array_slice($categories, 0, 2) as $category) : ?>
+										<span class="tesla-badge"><?php echo esc_html($category->name); ?></span>
+									<?php endforeach; ?>
 								</div>
 							<?php endif; ?>
 							
-							<div class="business-info">
-								<h3><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
-								<p><?php echo wp_trim_words(get_the_excerpt(), 15); ?></p>
-								<a href="<?php the_permalink(); ?>" class="book-now-btn">View & Book</a>
-							</div>
+							<p class="tesla-text-body" style="margin: var(--spacing-sm) 0;">
+								<?php echo wp_trim_words(get_the_excerpt(), 15); ?>
+							</p>
+							
+							<?php
+							// Get rating
+							$reviews = new WP_Query(array(
+								'post_type' => 'review',
+								'meta_query' => array(array('key' => '_business_id', 'value' => get_the_ID())),
+								'posts_per_page' => -1
+							));
+							
+							$total = 0;
+							$count = 0;
+							if ($reviews->have_posts()) {
+								while ($reviews->have_posts()) {
+									$reviews->the_post();
+									$rating = get_post_meta(get_the_ID(), '_rating', true);
+									if ($rating) {
+										$total += intval($rating);
+										$count++;
+									}
+								}
+								wp_reset_postdata();
+							}
+							
+							if ($count > 0) :
+								$average = round($total / $count, 1);
+							?>
+								<div class="tesla-rating">
+									<span class="tesla-stars">
+										<?php
+										for ($i = 1; $i <= 5; $i++) {
+											echo $i <= $average ? '★' : '☆';
+										}
+										?>
+									</span>
+									<span class="tesla-rating-text"><?php echo $average; ?> (<?php echo $count; ?>)</span>
+								</div>
+							<?php endif; ?>
+							
+							<a href="<?php the_permalink(); ?>" class="tesla-btn tesla-btn-primary" style="margin-top: var(--spacing-sm); width: 100%;">
+								View Details
+							</a>
 						</div>
-					<?php endwhile; wp_reset_postdata(); ?>
-				</div>
-			<?php else : ?>
-				<div class="no-content">
+					</article>
+				<?php endwhile; wp_reset_postdata(); ?>
+			</div>
+		<?php else : ?>
+			<div class="no-content">
 					<h3>No businesses yet</h3>
 					<p>Businesses will appear here once added to the directory.</p>
 					<?php if (current_user_can('edit_posts')) : ?>

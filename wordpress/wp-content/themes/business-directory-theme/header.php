@@ -2,32 +2,36 @@
 <html <?php language_attributes(); ?>>
 <head>
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+	<meta name="description" content="<?php bloginfo( 'description' ); ?>">
 	<?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>
 	<?php wp_body_open(); ?>
 	<div id="page" class="site">
 		<header id="masthead" class="site-header">
-			<div class="site-branding">
-				<?php
-				if ( has_custom_logo() ) {
-					the_custom_logo();
-				}
-				?>
-				<div class="site-identity">
-					<h1 class="site-title"><a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php bloginfo( 'name' ); ?></a></h1>
-					<p class="site-description"><?php bloginfo( 'description' ); ?></p>
+			<div class="container">
+				<div class="site-branding">
+					<div class="site-identity">
+						<?php if ( has_custom_logo() ) : ?>
+							<?php the_custom_logo(); ?>
+						<?php endif; ?>
+						<h1 class="site-title"><a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php bloginfo( 'name' ); ?></a></h1>
+						<p class="site-description"><?php bloginfo( 'description' ); ?></p>
+					</div>
+					<button class="menu-toggle" aria-controls="primary-menu" aria-expanded="false">
+						<span class="menu-icon">☰</span> Menu
+					</button>
 				</div>
+				<nav id="site-navigation" class="main-navigation">
+					<?php
+					wp_nav_menu( array(
+						'theme_location' => 'primary',
+						'menu_id'        => 'primary-menu',
+						'fallback_cb'    => 'wp_page_menu',
+					) );
+					?>
+				</nav>
 			</div>
-			<nav id="site-navigation" class="main-navigation">
-				<?php
-				wp_nav_menu( array(
-					'theme_location' => 'primary',
-					'menu_id'        => 'primary-menu',
-					'fallback_cb'    => 'wp_page_menu',
-				) );
-				?>
-			</nav>
 		</header>
 		<main id="main" class="site-main">

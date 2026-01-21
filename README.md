@@ -9,25 +9,40 @@ A complete WordPress plugin and theme for managing local business listings with 
 ## 🌟 Features
 
 ### Core Functionality
+
 - **Business Listings** - Custom post type with categories and detailed information
 - **Advanced Booking System** - Date/time picker with availability management
 - **Stripe Payment Integration** - Secure payment processing for bookings
 - **Review & Rating System** - 5-star ratings with verified customer reviews
 - **AI Chatbot Widget** - Customer support chatbot for businesses
 - **Shortcode System** - Embed booking forms and business lists anywhere
+- **Google Maps Integration** - Interactive maps, geolocation, and distance-based search
 
 ### Customer Features
+
 - **Customer Dashboard** - Manage bookings, reviews, and account settings
 - **Advanced Search & Filters** - Find businesses by category, location, and keywords
-- **Responsive Design** - Mobile-friendly interface for all devices
+- **Near Me Search** - Geolocation-powered proximity search with distance filtering
+- **Responsive Design** - Mobile-first interface optimized for all devices
 - **HTML Email Notifications** - Professional branded confirmation emails
+- **Map View** - Toggle between list and map views on directory page
+
+### Business Owner Features
+
+- **Business Claiming** - Owners can claim and manage their business listings
+- **Owner Dashboard** - Track bookings, revenue, and business performance
+- **Claim Approval System** - Admin review and approval of business ownership claims
+- **Email Notifications** - Automated notifications for claim requests and approvals
 
 ### Admin Features
+
 - **Enhanced Dashboard** - Real-time statistics with Chart.js visualizations
 - **Booking Calendar** - FullCalendar integration with drag-and-drop management
 - **Booking Management** - Complete CRUD operations for all bookings
 - **Business Management** - Full control over business listings
-- **Settings Panel** - Configure booking durations, buffer times, and Stripe keys
+- **Claims Management** - Review and approve business ownership requests
+- **Settings Panel** - Configure booking durations, buffer times, Stripe, and Google Maps API
+- **Location Management** - Address fields with automatic geocoding for coordinates
 
 ## 📋 Requirements
 
@@ -75,17 +90,33 @@ Visit `http://your-site.com/wp-admin/install.php` and complete the installation 
 
 The plugin will automatically create required database tables on activation.
 
+### 5. Configure Google Maps (Optional but Recommended)
+
+1. Get a Google Maps API key by following [GOOGLE_MAPS_SETUP.txt](GOOGLE_MAPS_SETUP.txt)
+2. Go to **Business Directory** → **Settings** → **Google Maps Integration**
+3. Paste your API key and save
+
+This enables:
+
+- Interactive maps on business pages
+- "Near Me" geolocation search
+- Distance-based filtering
+- "Get Directions" functionality
+
 ## 📊 Database Schema
 
 The plugin creates 3 custom tables:
 
 ### wp_bookings
+
 Stores all booking information including customer details, dates, times, and payment status.
 
 ### wp_availability
+
 Manages business availability schedules by day of week.
 
 ### wp_bdb_settings
+
 Stores plugin configuration settings (Stripe keys, booking durations, etc.).
 
 ## 🎯 Usage
@@ -94,27 +125,40 @@ Stores plugin configuration settings (Stripe keys, booking durations, etc.).
 
 1. Go to **Business Directory** → **Add New**
 2. Fill in business details (name, description, contact info)
-3. Set featured image and gallery images
-4. Assign categories
-5. Configure availability schedule
-6. Publish
+3. **Add Location** (if Google Maps is configured):
+   - Enter street address, city, state, ZIP
+   - Click "📍 Get Coordinates from Address"
+   - Coordinates will auto-populate for map display
+4. Set featured image and gallery images
+5. Assign categories
+6. Configure availability schedule
+7. Publish
 
 ### Managing Bookings
 
 **Admin Dashboard:**
+
 - View all bookings at **Business Directory** → **Bookings**
 - Use the **Calendar** view for visual management
 - Update booking statuses: Pending → Confirmed → Completed
 - View real-time statistics on the main dashboard
 
 **Customer Dashboard:**
+
 - Create a page with template "Dashboard Template"
 - Customers can view their bookings and reviews
 - Leave reviews after completed bookings
 
+**Business Owner Dashboard:**
+
+- Create a page with template "Business Owner Dashboard"
+- Owners can view their claimed businesses
+- Track booking counts and revenue per business
+- View all bookings for their businesses
+
 ### Shortcodes
 
-Embed booking forms and business lists anywhere:
+Embed booking forms, business lists, and maps anywhere:
 
 ```php
 // Booking form for specific business
@@ -125,11 +169,18 @@ Embed booking forms and business lists anywhere:
 
 // Search form
 [bdb_search]
+
+// Google Map for a business (requires API key)
+[bdb_map business_id="123" height="400px" zoom="15"]
+
+// Business owner dashboard
+[bdb_owner_dashboard]
 ```
 
 ### Email Configuration
 
 The plugin sends HTML emails for:
+
 - **Booking confirmations** - Sent immediately after booking
 - **Status updates** - When admin changes booking status
 - **Review reminders** - After booking completion (optional)
@@ -173,6 +224,7 @@ Access at **Business Directory** → **Settings**:
 ### Business Availability
 
 Set availability when editing a business listing:
+
 - Configure hours for each day of the week
 - Mark days as available/unavailable
 - Set opening and closing times
@@ -232,7 +284,7 @@ business-directory-theme/
 
 ## 📱 Screenshots
 
-*(Add screenshots here once you upload them to GitHub)*
+_(Add screenshots here once you upload them to GitHub)_
 
 1. Homepage with hero section
 2. Business directory with filters
@@ -258,6 +310,7 @@ This project is licensed under the GPL-2.0 License - see the [LICENSE](LICENSE) 
 ## 👨‍💻 Author
 
 **Gayao**
+
 - GitHub: [@Gayao003](https://github.com/Gayao003)
 - Portfolio: [Gayao Portfolio](https://github.com/Gayao003/Gayao_Portfolio)
 
@@ -272,6 +325,7 @@ This project is licensed under the GPL-2.0 License - see the [LICENSE](LICENSE) 
 ## 📞 Support
 
 For issues, questions, or suggestions:
+
 - Create an [Issue](https://github.com/Gayao003/Local-Business-Directory/issues)
 - Contact via [GitHub](https://github.com/Gayao003)
 

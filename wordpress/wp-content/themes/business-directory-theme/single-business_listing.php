@@ -33,6 +33,25 @@ get_header();
 							<?php endif; ?>
 
 							<?php
+							// Check if business can be claimed
+							$business_owner = get_post_meta( get_the_ID(), '_business_owner', true );
+							$current_user = get_current_user_id();
+							$is_owner = ( $business_owner && $business_owner == $current_user );
+							
+							if ( ! $business_owner && is_user_logged_in() ) :
+							?>
+								<div class="claim-business-section">
+									<button class="button button-claim" id="claimBusinessBtn" data-business-id="<?php echo get_the_ID(); ?>">
+										📋 Claim This Business
+									</button>
+								</div>
+							<?php elseif ( $is_owner ) : ?>
+								<div class="owner-badge">
+									<span class="badge-owner">✓ You own this business</span>
+								</div>
+							<?php endif; ?>
+
+							<?php
 							// Display average rating
 							$args = array(
 								'post_type' => 'review',
@@ -62,38 +81,51 @@ get_header();
 							}
 
 							if ( $count > 0 ) {
-								$average_rating = round( $total_rating / $count, 1 );
-								?>
-								<div class="business-rating">
-									<div class="stars">
-										<?php
-										for ( $i = 1; $i <= 5; $i++ ) {
-											if ( $i <= floor( $average_rating ) ) {
-												echo '<span class="star filled">★</span>';
-											} elseif ( $i == ceil( $average_rating ) && $average_rating - floor( $average_rating ) >= 0.5 ) {
-												echo '<span class="star half">★</span>';
-											} else {
-												echo '<span class="star">☆</span>';
-											}
-										}
-										?>
-									</div>
-									<span class="rating-text"><?php echo esc_html( $average_rating ); ?> (<?php echo esc_html( $count ); ?> reviews)</span>
-								</div>
+						$average_rating = round( $total_rating / $count, 1 );
+						?>
+						<div class="business-rating">
+							<span class="stars">
 								<?php
-							}
-							?>
-						</div>
+								for ( $i = 1; $i <= 5; $i++ ) {
+									echo $i <= $average_rating ? '★' : '☆';
+								}
+								?>
+							</span>
+						<span class="rating-text"><?php echo esc_html( $average_rating ); ?> (<?php echo esc_html( $count ); ?> reviews)</span>
+					</div>
+					<?php
+				}
+				?>
+			</div>
 
-						<?php if ( has_post_thumbnail() ) : ?>
-							<div class="business-image">
-								<?php the_post_thumbnail( 'large' ); ?>
-							</div>
-						<?php endif; ?>
+			<?php if ( has_post_thumbnail() ) : ?>
+				<div class="business-image">
+					<?php the_post_thumbnail( 'large' ); ?>
+				</div>
+			<?php endif; ?>
+		</div>
+	</div>
+</header>
+				$full_address = trim( implode( ', ', array_filter( array( $address, $city, $state, $zip ) ) ) );
+			?>
+			<section class="business-location-section">
+				<div class="container">
+					<h2>Location</h2>
+					<?php if ( $full_address ) : ?>
+						<div class="business-address">
+							<p><?php echo esc_html( $full_address ); ?></p>
+							<a href="https://www.google.com/maps/dir/?api=1&destination=<?php echo urlencode( $full_address ); ?>" 
+							   class="button button-primary" target="_blank" rel="noopener">
+								📍 Get Directions
+							</a>
+						</div>
+					<?php endif; ?>
+					<div class="business-map">
+						<?php echo do_shortcode( '[bdb_map business_id="' . get_the_ID() . '" height="400px" zoom="15"]' ); ?>
 					</div>
 				</div>
-			</header>
-
+			</section>
+            
 			<!-- Business Details -->
 			<section class="business-info-section">
 				<div class="container">
@@ -421,6 +453,82 @@ if ( file_exists( $chatbot_path ) ) {
 			grid-template-columns: 1fr;
 		}
 	}
+
+	/* Claim Business Styles */
+	.claim-business-section {
+		margin: 15px 0;
+	}
+
+	.button-claim {
+		background: #f0ad4e;
+		color: #fff;
+		border: none;
+		padding: 10px 20px;
+		border-radius: 6px;
+		font-size: 14px;
+		font-weight: 600;
+		cursor: pointer;
+		transition: all 0.3s ease;
+	}
+
+	.button-claim:hover {
+		background: #ec971f;
+		transform: translateY(-2px);
+		box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+	}
+
+	.owner-badge {
+		margin: 15px 0;
+	}
+
+	.badge-owner {
+		background: #5cb85c;
+		color: #fff;
+		padding: 8px 16px;
+		border-radius: 20px;
+		font-size: 14px;
+		font-weight: 600;
+		display: inline-block;
+	}
 </style>
+
+<script>
+jQuery(document).ready(function($) {
+	// Claim Business Button
+	$('#claimBusinessBtn').on('click', function() {
+		const button = $(this);
+		const businessId = button.data('business-id');
+
+		if (!confirm('Are you sure you want to claim this business? An administrator will review your request.')) {
+			return;
+		}
+
+		button.prop('disabled', true).text('Processing...');
+
+		$.ajax({
+			url: bdb_obj.ajax_url,
+			type: 'POST',
+			data: {
+				action: 'bdb_claim_business',
+				business_id: businessId,
+				nonce: bdb_obj.nonce
+			},
+			success: function(response) {
+				if (response.success) {
+					alert(response.data.message);
+					button.text('✓ Claim Submitted').css('background', '#5cb85c');
+				} else {
+					alert('Error: ' + response.data.message);
+					button.prop('disabled', false).text('📋 Claim This Business');
+				}
+			},
+			error: function() {
+				alert('An error occurred. Please try again.');
+				button.prop('disabled', false).text('📋 Claim This Business');
+			}
+		});
+	});
+});
+</script>
 
 <?php get_footer(); ?>

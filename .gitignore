@@ -20,7 +20,7 @@ wordpress/wp-settings.php
 wordpress/wp-signup.php
 wordpress/wp-trackback.php
 wordpress/xmlrpc.php
-
+GOOGLE_MAPS_SETUP.txt
 # WordPress Config
 wordpress/wp-config.php
 

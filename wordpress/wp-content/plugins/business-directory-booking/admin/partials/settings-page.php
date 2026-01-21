@@ -26,6 +26,7 @@ if ( isset( $_POST['bdb_save_settings'] ) ) {
 		'stripe_test_mode'     => isset( $_POST['stripe_test_mode'] ) ? 1 : 0,
 		'stripe_publishable'   => sanitize_text_field( $_POST['stripe_publishable'] ?? '' ),
 		'stripe_secret'        => sanitize_text_field( $_POST['stripe_secret'] ?? '' ),
+		'google_maps_api_key'  => sanitize_text_field( $_POST['google_maps_api_key'] ?? '' ),
 		'enable_reviews'       => isset( $_POST['enable_reviews'] ) ? 1 : 0,
 		'enable_chatbot'       => isset( $_POST['enable_chatbot'] ) ? 1 : 0,
 		'booking_auto_confirm' => isset( $_POST['booking_auto_confirm'] ) ? 1 : 0,
@@ -49,6 +50,7 @@ $require_payment = $db->get_setting( 'require_payment', 1 );
 $stripe_test_mode = $db->get_setting( 'stripe_test_mode', 1 );
 $stripe_publishable = $db->get_setting( 'stripe_publishable', '' );
 $stripe_secret = $db->get_setting( 'stripe_secret', '' );
+$google_maps_api_key = $db->get_setting( 'google_maps_api_key', '' );
 $enable_reviews = $db->get_setting( 'enable_reviews', 1 );
 $enable_chatbot = $db->get_setting( 'enable_chatbot', 1 );
 $booking_auto_confirm = $db->get_setting( 'booking_auto_confirm', 0 );
@@ -120,6 +122,21 @@ $booking_auto_confirm = $db->get_setting( 'booking_auto_confirm', 0 );
 				<td>
 					<input type="password" id="stripe_secret" name="stripe_secret" value="<?php echo esc_attr( $stripe_secret ); ?>" class="regular-text">
 					<p class="description">Your Stripe secret key (starts with sk_) - Never share this publicly</p>
+				</td>
+			</tr>
+		</table>
+
+		<!-- Google Maps Integration -->
+		<h2>Google Maps Integration</h2>
+		<table class="form-table">
+			<tr>
+				<th scope="row"><label for="google_maps_api_key">Google Maps API Key</label></th>
+				<td>
+					<input type="text" id="google_maps_api_key" name="google_maps_api_key" value="<?php echo esc_attr( $google_maps_api_key ); ?>" class="regular-text">
+					<p class="description">
+						Enter your Google Maps API key to enable location features, maps, and "Near Me" search.
+						<br><a href="https://console.cloud.google.com/google/maps-apis" target="_blank">Get your API key here →</a>
+					</p>
 				</td>
 			</tr>
 		</table>

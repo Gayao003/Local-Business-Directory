@@ -32,6 +32,8 @@ require_once BDB_PLUGIN_PATH . 'includes/class-plugin.php';
 require_once BDB_PLUGIN_PATH . 'includes/class-ajax.php';
 require_once BDB_PLUGIN_PATH . 'includes/class-stripe.php';
 require_once BDB_PLUGIN_PATH . 'includes/class-shortcodes.php';
+require_once BDB_PLUGIN_PATH . 'includes/class-business-owner.php';
+require_once BDB_PLUGIN_PATH . 'includes/class-google-maps.php';
 
 // Load admin files (only in admin)
 if ( is_admin() ) {
